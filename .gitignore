@@ -122,3 +122,20 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Egne additions
+*.pdf
+*.png
+*.jpg
+Bøger/**
+.directory
+.DS_store
+.idea/**
+.Idea/**
+.ipynb_checkpoints
+*.zip
+
+*.lock
+
+*.icloud
