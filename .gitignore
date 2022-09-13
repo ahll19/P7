@@ -141,3 +141,5 @@ Bøger/**
 *.icloud
 data/**
 Data/**
+data**/**
+Data**/**
