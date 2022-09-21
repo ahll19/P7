@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import data_gen_1
+import models
 
 device = torch.device('cpu') #torch.device('cuda' if torch.cuda.is_available else 'cpu')
 
