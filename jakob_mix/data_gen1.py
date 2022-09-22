@@ -8,9 +8,7 @@ def gen_list(n, var_x, var_y, dim=2):
     Generates a set of random points according to <statistical inference of information in networks>
     on page 51. The third variable, Z, is ignored as this is only used to create training data
     for MI, not CMI.
-
     The covariance matrices are both a scaled identity matrix.
-
     :param n: Number of points realized
     :param var_x: Variance of X
     :param var_y: Variance of Y
