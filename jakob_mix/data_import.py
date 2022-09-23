@@ -67,8 +67,8 @@ class NumbersDataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        sample = {'feature': self.samples[idx], 'label': self.labels[idx]}
-        return sample
+        #sample = {'feature': self.samples[idx], 'label': self.labels[idx]}
+        return self.samples, self.labels
 
 
 def train(train_loader, learning_rate, num_epoch, input_size):
@@ -80,15 +80,14 @@ def train(train_loader, learning_rate, num_epoch, input_size):
 
     # training loop
     n_total_steps = len(train_loader)
-    sample = train_loader.dataset.samples
-    label = train_loader.dataset.labels
     for epoch in range(num_epoch):
-        for i, (images, labels) in enumerate(zip(sample, label)):
+        for i, (images, labels) in enumerate(train_loader):
             sample = images.reshape(-1, 2).to(device)
-            labels = torch.ones(
-                (len(sample), 1)) * labels.item()  # reshaping because labels needs to be same size as output
+            #labels = torch.ones(
+            #    (len(sample), 1)) * labels.item()  # reshaping because labels needs to be same size as output
             labels = labels.to(device)
 
+            print(images.shape, labels, labels.shape)
             # forward
             output = model(sample)
             loss = criterion(output, labels)
@@ -105,7 +104,7 @@ def train(train_loader, learning_rate, num_epoch, input_size):
 
 if __name__ == '__main__':
     input_size = 100
-    train_data = NumbersDataset(10, input_size)
+    train_data = NumbersDataset(20, input_size)
     dataloader = DataLoader(train_data, batch_size=5, shuffle=True)
     # test = next(iter(dataloader))
     train(dataloader, 0.5, 20, input_size)

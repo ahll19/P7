@@ -30,9 +30,9 @@ def gen_list(n, var_x, var_y, dim=2):
 
 
 if __name__ == "__main__":
-    _test, mutual_information = gen_list(3000, 10, 10, 1)
+    _test, mutual_information = gen_list(2, 10, 10, 1)
     x, y = _test[:, 0, :], _test[:, 1, :]
-
+    print(x,y)
     plt.scatter(x, y, alpha=.1)
     plt.show()
     print(f"Mutual information is approx {mutual_information:.2f} \n")
