@@ -58,8 +58,6 @@ def train(train_loader, learning_rate, num_epoch, input_size):
     n_total_steps = len(train_loader)
     for epoch in range(num_epoch):
         for i, (sample, labels) in enumerate(train_loader):
-            # 100, 1, 28, 28
-            # 100, 784
             sample = sample.to(device)
             labels = labels.to(device)
 
