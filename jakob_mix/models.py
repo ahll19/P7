@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from torch.utils.data import Dataset
+
 
 class sin_fun(nn.Module):
     def __init__(self):
@@ -27,13 +29,26 @@ class NeuralNet(nn.Module):
 class Article_nn(nn.Module):
     def __init__(self, input_size):
         super(Article_nn, self).__init__()
-        self.l1 = nn.Linear(input_size, 64)
+        self.l1 = nn.Linear(input_size*2, 64)
         self.relu = nn.ReLU()
-        self.l2 = nn.Linear(64, 1)
-        self.sig = nn.Sigmoid()
+        self.l2 = nn.Linear(64, 1000)
+        self.l3 = nn.Linear(1000, 1)
+
 
     def forward(self, x):
         out = self.relu(self.l1(x))
         out = self.relu(self.l2(out))
-        out = self.sig(out)
+        out = self.l3(out)
         return out
+
+
+class NumbersDataset(Dataset):
+    def __init__(self, samples, labels):
+        self.samples = torch.from_numpy(samples).to(torch.float32)
+        self.labels = torch.from_numpy(labels).to(torch.float32)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        return self.samples[idx], self.labels[idx]
