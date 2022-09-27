@@ -41,6 +41,26 @@ class Article_nn(nn.Module):
         out = self.l3(out)
         return out
 
+class Article_nn2(nn.Module):
+    def __init__(self, input_size):
+        super(Article_nn, self).__init__()
+        self.l1 = nn.Linear(input_size*2, 64)
+        self.relu = nn.ReLU()
+        self.leaky = nn.LeakyReLU()
+        self.l2 = nn.Linear(64, 128)
+        self.l3 = nn.Linear(128, 128)
+        self.l4 = nn.Linear(128, 64)
+        self.l5 = nn.Linear(64, 1)
+
+
+    def forward(self, x):
+        out = self.leaky(self.l1(x))
+        out = self.leaky(self.l2(out))
+        out = self.leaky(self.l3(out))
+        out = self.leaky(self.l4(out))
+        out = self.l5(out)
+        return out
+
 
 class NumbersDataset(Dataset):
     def __init__(self, samples, labels):
