@@ -94,7 +94,7 @@ def load_data(file_path):
 
 
 if __name__ == "__main__":
-    realisations, xy_len = 5000, 1000
+    realisations, xy_len = 500, 5000
     data, labels = create_data(realisations, xy_len)
 
     path = f"data/realisations={realisations}_xy_len={xy_len}"

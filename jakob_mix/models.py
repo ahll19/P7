@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
+import torch.nn.functional as F
+from torch.autograd import Variable
 
 
 class sin_fun(nn.Module):
@@ -26,14 +28,36 @@ class NeuralNet(nn.Module):
         return out
 
 
-class Article_nn(nn.Module):
+class CNN(nn.Module):
+    def __init__(self, input_size, batch_size):
+        super(CNN, self).__init__()
+        self.out_channel = 6
+        self.kernel_size = 2
+        self.magic_nr = (input_size*self.out_channel)-(self.kernel_size*3)
+
+        self.conv1 = nn.Conv2d(batch_size, self.out_channel, self.kernel_size)
+        self.pool = nn.MaxPool2d(1, 1)
+        self.fc1 = nn.Linear(self.magic_nr, 100)
+        self.fc2 = nn.Linear(100, 200)
+        self.fc3 = nn.Linear(200, batch_size)
+        self.batch = batch_size
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = x.view(-1, self.magic_nr)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x.view(self.batch, -1)
+
+
+class FNN(nn.Module):
     def __init__(self, input_size):
-        super(Article_nn, self).__init__()
+        super(FNN, self).__init__()
         self.l1 = nn.Linear(input_size*2, 64)
         self.relu = nn.ReLU()
         self.l2 = nn.Linear(64, 1000)
         self.l3 = nn.Linear(1000, 1)
-
 
     def forward(self, x):
         out = self.relu(self.l1(x))
@@ -41,9 +65,40 @@ class Article_nn(nn.Module):
         out = self.l3(out)
         return out
 
+
+class RNN(nn.Module):
+    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim, batch_size):
+        super(RNN, self).__init__()
+
+        # Number of hidden dimensions
+        self.hidden_dim = hidden_dim
+
+        # Number of hidden layers
+        self.layer_dim = layer_dim
+
+        self.input_dim = input_dim
+        self.batch = batch_size
+
+        # RNN
+        self.rnn = nn.RNN(2, hidden_dim, layer_dim,
+                          batch_first=True, nonlinearity='relu')
+
+        # Readout layer
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        # Initialize hidden state with zeros
+        h0 = Variable(torch.zeros(self.layer_dim, self.batch, self.hidden_dim))
+
+        # One time step
+        out, hn = self.rnn(x, h0)
+        out = self.fc(out[:, -1, :])
+        return out
+
+
 class Article_nn2(nn.Module):
     def __init__(self, input_size):
-        super(Article_nn, self).__init__()
+        super(Article_nn2, self).__init__()
         self.l1 = nn.Linear(input_size*2, 64)
         self.relu = nn.ReLU()
         self.leaky = nn.LeakyReLU()
@@ -51,7 +106,6 @@ class Article_nn2(nn.Module):
         self.l3 = nn.Linear(128, 128)
         self.l4 = nn.Linear(128, 64)
         self.l5 = nn.Linear(64, 1)
-
 
     def forward(self, x):
         out = self.leaky(self.l1(x))
