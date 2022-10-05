@@ -16,7 +16,7 @@ def calculate_MI(idx1, idx2, cov):
         float: Returns the mutual information of X1 and X2
     """
     top = cov[idx1, idx1] * cov[idx2, idx2]
-    bot = top - 2*cov[idx1, idx2]
+    bot = top - cov[idx1, idx2]**2
 
     div = top / bot
 
