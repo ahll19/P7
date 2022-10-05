@@ -11,6 +11,7 @@ from scipy.ndimage import uniform_filter1d
 import numpy as np
 import data_gen1
 import models
+import ksg
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -19,11 +20,12 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
     if network == 'CNN':
         model = models.CNN(input_size, batch_size)
     elif network == 'RNN':
-        model = models.RNN(input_size, hidden_dim=30, layer_dim=2,
+        model = models.RNN(input_size, hidden_dim=input_size, layer_dim=2,
                            output_dim=1, batch_size=batch_size)
     else:
         model = models.FNN(input_size)
 
+    print(model)
     # loss and optimizer
     #criterion = nn.MSELoss(reduction='sum')
     criterion = nn.L1Loss()
@@ -53,11 +55,11 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
             loss.backward()
             #torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
             optimizer.step()
-
+            break
             if (epoch) % 100 == 0 and i % 10 == 0:
                 print(
                     f'epoch {epoch} / {num_epoch-1}, step {i}/{n_total_steps-1} loss = {loss.item():.8f}')
-
+        break
 
     print(f"\n#################################\n# TRAINING DONE\n#################################\n")
 
@@ -87,9 +89,8 @@ def test(model, test_loader, batch_size, network='FNN'):
             n_samples += 1
 
         acc = n_diff/n_samples
-        print(f"accuracy = {acc}")
 
-    return out_list, label_list
+    return out_list, label_list, acc
 
 
 if __name__ == "__main__":
@@ -119,10 +120,22 @@ if __name__ == "__main__":
                                 xy_len, batch_size, network=network)
 
     # test
-    output_test, label_test = test(model_trained, test_loader, batch_size, network=network)
+    output_test, label_test, acc = test(model_trained, test_loader, batch_size, network=network)
+
+
+    # Calculating ksg while still in numpy:
+    ksg_list = np.zeros(len(data_test))
+    for i in range(len(data_test)):
+        ksg_list[i] = ksg.predict(data_test[i][:, 0], data_test[i][:, 1])
+
+    avg_ksg = np.sum(ksg_list)/len(ksg_list)
+
+    print(f"Avg error model = {acc:.5f}")
+    print(f"Avg error KSG   = {avg_ksg:.5f}")
 
     plt.plot(output_test, "*", label="Model output")
     plt.plot(label_test, "*", label="Label")
+    plt.plot(np.reshape(ksg_list, (-1, 1)), '*', label="KSG")
     plt.legend()
     plt.show()
 
@@ -131,8 +144,12 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-    a = np.array(output_test) - np.array(label_test)
-    plt.hist(a, bins=50)
+    hist_model = np.array(output_test) - np.array(label_test)
+    hist_ksg = np.reshape(ksg_list, (-1, 1)) - np.array(label_test)
+
+    _, bins, _ = plt.hist(hist_model, bins=50, alpha=0.5, label="Model")
+    _ = plt.hist(hist_ksg, bins=bins, alpha=0.5, label="KSG")
+    plt.legend()
     plt.show()
 
 

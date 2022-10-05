@@ -67,6 +67,10 @@ class FNN(nn.Module):
 
 
 class RNN(nn.Module):
+    '''
+    Inspiration from:
+    https://www.kaggle.com/code/kanncaa1/recurrent-neural-network-with-pytorch/notebook
+    '''
     def __init__(self, input_dim, hidden_dim, layer_dim, output_dim, batch_size):
         super(RNN, self).__init__()
 
@@ -83,7 +87,7 @@ class RNN(nn.Module):
         self.rnn = nn.RNN(2, hidden_dim, layer_dim,
                           batch_first=True, nonlinearity='relu')
 
-        # Readout layer
+        # fc: fully connected layer
         self.fc = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x):
@@ -92,6 +96,9 @@ class RNN(nn.Module):
 
         # One time step
         out, hn = self.rnn(x, h0)
+
+        # Since RNN has different structure it only uses the last
+        # entrance of the sequence length for the output hence [:, -1, :]
         out = self.fc(out[:, -1, :])
         return out
 
