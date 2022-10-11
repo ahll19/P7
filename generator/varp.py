@@ -110,13 +110,9 @@ def simulate_VAR(coefficients, noise_cov, num_steps, x0=None):
     p = len(coefficients)
     dim = noise_cov.shape[0]
     results = np.zeros((num_steps + 1, dim))
-
-    # initialize the initial value
-    calc_cov = False
     
     if x0 is None:
-        calc_cov = True
-        _x0 = np.zeros(p)
+        _x0 = np.zeros(dim)
 
     results[0] = _x0
 

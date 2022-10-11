@@ -1,9 +1,0 @@
-(784 x 64 x 64 x 10) training time:
-    CPU: ~18 (no hyperthreading)
-    GPU: ~21
-
-(784 X 128 X 1024 X 1024 X 128 X 10) training time:
-    CPU: ~38
-    GPU: ~21
-
-
