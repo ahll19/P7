@@ -7,7 +7,7 @@ sys.path.append("~/Git/P7")
 import numpy as np
 from generator import varp
 from itertools import combinations
-import matplotlib.pyplot as plt
+import os
 
 
 # Specify the parameters for the datageneration (DNC means do not change)
@@ -38,10 +38,11 @@ for i, s in enumerate(series):
 
 # Save the coefficients, so that they can be used again later
 for k1 in coefs:
-    save_name = "coefs/coefs_key_" + str(k1)
+    save_name = os.getcwd() + "/AR_ML/coefs/coefs_key_" + str(k1)
     varp.save_load_coefs(save_name, coefs[k1], covs[k1], True)
 
 # Generate the data
+all_keys = []
 for key in coefs:
     data, final_cov = varp.simulate_VAR(coefs[key], covs[key], model_realizations)
     data = data[1:]
@@ -55,6 +56,9 @@ for key in coefs:
         mi_matrix[e[1], e[0]] = mutual_information
 
     # The matrix (A) stores the MI: A_ij = A_ji = I(x_j; x_I)
-    np.save(f"MI_matrices/MI_matrix_{key}", mi_matrix)
-    np.save(f"data/data_{key}", data)
-    np.save(f"covariances/cov_{key}", final_cov)
+    np.save(os.getcwd() + f"/AR_ML/MI_matrices/MI_matrix_{key}", mi_matrix)
+    np.save(os.getcwd() + f"/AR_ML/data/data_{key}", data)
+    np.save(os.getcwd() + f"/AR_ML/covariances/cov_{key}", final_cov)
+    all_keys.append(key)
+
+np.save(os.getcwd() + f"/AR_ML/keys/all_keys", all_keys)
