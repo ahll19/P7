@@ -1,4 +1,4 @@
-# [realizations, dimension, number of variables]
+# Temp file that should be worked more upon
 # Make generator available
 import sys
 
@@ -57,7 +57,7 @@ for key in coefs:
 
     # The matrix (A) stores the MI: A_ij = A_ji = I(x_j; x_I)
     np.save(os.getcwd() + f"/AR_ML/MI_matrices/MI_matrix_{key}", mi_matrix)
-    np.save(os.getcwd() + f"/AR_ML/data/data_{key}", data)
+    np.save(os.getcwd() + f"/AR_ML/data/data_{key}", data.reshape(model_realizations, 1, num_var))
     np.save(os.getcwd() + f"/AR_ML/covariances/cov_{key}", final_cov)
     all_keys.append(key)
 
