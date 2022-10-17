@@ -17,6 +17,37 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # training loop
 def train(train_loader, learning_rate, num_epoch, input_size, batch_size, network='FNN'):
+    """
+    Training function for the Neural Network. 
+    The training data has in the case with two random variabl-
+    es the shape [realisations, input_size, 2]. Realisations 
+    is the same as len(train_loader)*batch_size. During trani-
+    ng this shape becomes [batch_size, input_size, 2]. 
+
+    Args:
+        train_loader (torch.utils.data.dataloader.DataLoader): 
+            Training data. Also containing labels.
+        learning_rate (float): 
+            Used for the optimizer. If set too high then there
+            Nan may occour.
+        num_epoch (int): 
+            Amount of epochs. This defines the amount of times
+            the neural network will work through the entire d-
+            ataset
+        input_size (int): 
+            Length of the random variables. May be reffered to
+            as xy_len
+        batch_size (int): 
+            The amount of realisations of the random variables 
+            that we use in each training loop.
+        network (str, optional): 
+            Specifies the type of NN that is used. Options are
+            CNN, RNN, and RNN. Defaults to 'FNN'.
+
+    Returns:
+        Model: Trained model. 
+        Loss: The loss that is calculated during training.
+    """
     if network == 'CNN':
         model = models.CNN(input_size, batch_size)
     elif network == 'RNN':
@@ -47,7 +78,7 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
 
             # forward
             output = model(sample)
-            loss = criterion(output, labels)#/labels.shape[0]
+            loss = criterion(output, labels)
             loss_list.append(loss.item())
 
             # backward
@@ -59,7 +90,7 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
             if (epoch) % 100 == 0 and i % 10 == 0:
                 print(
                     f'epoch {epoch} / {num_epoch-1}, step {i}/{n_total_steps-1} loss = {loss.item():.8f}')
-        break
+        
 
     print(f"\n#################################\n# TRAINING DONE\n#################################\n")
 
@@ -67,6 +98,26 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
 
 
 def test(model, test_loader, batch_size, network='FNN'):
+    """
+    This function is testing the trained model. This model c-
+    an be obtained using train().
+
+    Args:
+        model (nn.Module): 
+            Trained model
+        test_loader (torch.utils.data.dataloader.DataLoader): 
+            Test data.
+        batch_size (int):
+            Used to reshape data if network='FNN'
+        network (str, optional): 
+            Specifies the type of NN that is used. Options are
+            CNN, RNN, and RNN. Defaults to 'FNN'.
+
+    Returns:
+        out_list: Estimated labels using the model.
+        label_list: Labels of the training data.
+        acc: The average error between out_list and label_list.
+    """
     with torch.no_grad():
         out_list = []
         label_list = []
@@ -123,7 +174,7 @@ if __name__ == "__main__":
     output_test, label_test, acc = test(model_trained, test_loader, batch_size, network=network)
 
 
-    # Calculating ksg while still in numpy:
+    # Calculating ksg:
     ksg_list = np.zeros(len(data_test))
     for i in range(len(data_test)):
         ksg_list[i] = ksg.predict(data_test[i][:, 0], data_test[i][:, 1])
