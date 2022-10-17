@@ -12,7 +12,6 @@ import numpy as np
 import data_gen1
 import models
 import ksg
-from torchviz import make_dot
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -87,12 +86,12 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
             loss.backward()
             #torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
             optimizer.step()
-            
+            break
             if (epoch) % 100 == 0 and i % 10 == 0:
                 print(
                     f'epoch {epoch} / {num_epoch-1}, step {i}/{n_total_steps-1} loss = {loss.item():.8f}')
         
-    #make_dot(output, params=dict(list(model.named_parameters()))).render("fuckme", format="png")
+
     print(f"\n#################################\n# TRAINING DONE\n#################################\n")
 
     return model, loss_list
@@ -147,11 +146,11 @@ def test(model, test_loader, batch_size, network='FNN'):
 
 if __name__ == "__main__":
     path = "data/realisations=5000_xy_len=1000.npy"
-    realisations = 100
+    realisations = 500
     xy_len = 50
     batch_size = 10
     learning_rate = 0.001
-    epochs = 1
+    epochs = 250
     network = 'RNN'
 
     data, label = data_gen1.load_data(path)
