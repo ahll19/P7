@@ -70,6 +70,8 @@ class RNN(nn.Module):
     '''
     Inspiration from:
     https://www.kaggle.com/code/kanncaa1/recurrent-neural-network-with-pytorch/notebook
+
+    Module used to create a recurrent neural network. 
     '''
     def __init__(self, input_dim, hidden_dim, layer_dim, output_dim, batch_size):
         super(RNN, self).__init__()
