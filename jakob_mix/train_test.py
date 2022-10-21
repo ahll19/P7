@@ -61,7 +61,7 @@ def train(train_loader, learning_rate, num_epoch, input_size, batch_size, networ
     # loss and optimizer
     #criterion = nn.MSELoss(reduction='sum')
     criterion = nn.L1Loss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     # training loop
     n_total_steps = len(train_loader)
@@ -147,11 +147,19 @@ def test(model, test_loader, batch_size, network='FNN'):
 
 if __name__ == "__main__":
     path = "data/realisations=5000_xy_len=1000.npy"
-    realisations = 100
+    '''
+    best results achieved: 
+    realisations = 500
     xy_len = 50
     batch_size = 10
-    learning_rate = 0.001
-    epochs = 1
+    learning_rate = 0.00001
+    epochs = 1000
+    '''
+    realisations = 500
+    xy_len = 50
+    batch_size = 10
+    learning_rate = 0.0001
+    epochs = 250
     network = 'RNN'
 
     data, label = data_gen1.load_data(path)
@@ -201,6 +209,7 @@ if __name__ == "__main__":
 
     _, bins, _ = plt.hist(hist_model, bins=50, alpha=0.5, label="Model")
     _ = plt.hist(hist_ksg, bins=bins, alpha=0.5, label="KSG")
+    plt.title(f"Avg err: {acc:.5f}, Mean err: {np.mean(hist_model):.5f}, Var error: {np.var(hist_model):.5f}")
     plt.legend()
     plt.show()
 

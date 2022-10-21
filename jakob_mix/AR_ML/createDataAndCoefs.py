@@ -1,8 +1,8 @@
 # Temp file that should be worked more upon
 # Make generator available
-import sys
+import sys, os
 
-sys.path.append("~/Git/P7")
+sys.path.append(os.getcwd())
 
 import numpy as np
 from generator import varp
@@ -38,7 +38,7 @@ for i, s in enumerate(series):
 
 # Save the coefficients, so that they can be used again later
 for k1 in coefs:
-    save_name = os.getcwd() + "/AR_ML/coefs/coefs_key_" + str(k1)
+    save_name = "coefs/coefs_key_" + str(k1)
     varp.save_load_coefs(save_name, coefs[k1], covs[k1], True)
 
 # Generate the data
@@ -56,9 +56,9 @@ for key in coefs:
         mi_matrix[e[1], e[0]] = mutual_information
 
     # The matrix (A) stores the MI: A_ij = A_ji = I(x_j; x_I)
-    np.save(os.getcwd() + f"/AR_ML/MI_matrices/MI_matrix_{key}", mi_matrix)
-    np.save(os.getcwd() + f"/AR_ML/data/data_{key}", data.reshape(model_realizations, 1, num_var))
-    np.save(os.getcwd() + f"/AR_ML/covariances/cov_{key}", final_cov)
+    np.save(f"MI_matrices/MI_matrix_{key}", mi_matrix)
+    np.save(f"data/data_{key}", data.reshape(model_realizations, 1, num_var))
+    np.save(f"covariances/cov_{key}", final_cov)
     all_keys.append(key)
 
-np.save(os.getcwd() + f"/AR_ML/keys/all_keys", all_keys)
+np.save(f"keys/all_keys", all_keys)
