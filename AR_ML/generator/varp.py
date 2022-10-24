@@ -250,8 +250,6 @@ def __interpolate_data(data_list, recalled=False):
     # We tried twice, and didn't get the data to interpolate
     raise Exception("Data would not interpolate in two tries in function interpolate_data()")
 
-    return interpolated_data
-
 
 def __ai(var, Ai):
         """
