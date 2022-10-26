@@ -29,6 +29,6 @@ data = np.asarray(data)
 labels = np.asarray(labels)
 
 np.save("data/jakob_formatted_data.npy", data)
-np.save("data/jakob_formatted_labels.npy", data)
+np.save("data/jakob_formatted_labels.npy", labels)
 
 
