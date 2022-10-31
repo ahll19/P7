@@ -192,7 +192,7 @@ if __name__ == "__main__":
 
     print(f"Avg error model = {acc:.5f}")
     print(f"Avg error KSG   = {avg_ksg:.5f}")
-
+    '''
     plt.plot(output_test, "*", label="Model output")
     plt.plot(label_test, "*", label="Label")
     plt.plot(np.reshape(ksg_list, (-1, 1)), '*', label="KSG")
@@ -212,6 +212,7 @@ if __name__ == "__main__":
     plt.title(f"Avg err: {acc:.5f}, Mean err: {np.mean(hist_model):.5f}, Var error: {np.var(hist_model):.5f}")
     plt.legend()
     plt.show()
+    '''
 
 
 
