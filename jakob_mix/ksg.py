@@ -1,6 +1,6 @@
 #Written by Weihao Gao from UIUC
 # credits:
-#https://github.com/wgao9/knnie/blob/master/knnie.py?fbclid=IwAR0qEwtDuJFCQGWcqmtci5yEo1Zmfvcer1g-QozcJktmG54w_feAKIgQsK0
+# https://github.com/wgao9/knnie/blob/master/knnie.py?fbclid=IwAR0qEwtDuJFCQGWcqmtci5yEo1Zmfvcer1g-QozcJktmG54w_feAKIgQsK0
 
 import sys, os
 sys.path.append(os.getcwd())
