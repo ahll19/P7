@@ -198,9 +198,40 @@ def test(model, test_loader, batch_size, network='FNN') -> dict:
 
     return test_dict
 
+def data_prep(data, label, batch_size, test_size=0.1, shuffle_test=True,
+              shuffle_train=True) -> DataLoader:
+    """Converts data and labels to training and test
+    data as Dataloaders
+
+    Args:
+        data (np.array): Timeseries
+        label (np.array): labels
+        batch_size (int): batch size
+        test_size (float, optional): amount of data saved for test. 
+                                     Defaults to 0.1.
+        shuffle_test (boolian, optional): Defaults to True.
+        shuffle_train (boolian, optional): Defaults to True.
+
+    Returns:
+        trn_loader : DataLoader 
+        tst_loader : DataLoader
+    """
+
+    data_train, data_test, label_train, label_test = tts(data, label, test_size=test_size)
+
+    train_data = models.NumbersDataset(data_train, label_train)
+    test_data = models.NumbersDataset(data_test, label_test)
+
+    trn_loader = DataLoader(train_data, batch_size=batch_size, shuffle=shuffle_train)
+    tst_loader = DataLoader(test_data, batch_size=batch_size, shuffle=shuffle_test)
+
+    return trn_loader, tst_loader
+
+
+
 if __name__ == "__main__":
-    path = "data/unif_10000.npy"
-    data, label = data_gen1.load_data(path)
+    path = "data/17-11-2022_14-05-48"
+    data, label = data_gen1.load_data(path+'/unif.npy')
 
     '''
     best results achieved: 
@@ -212,24 +243,19 @@ if __name__ == "__main__":
     '''
     realisations = len(label)
     xy_len = 50
-    batch_size = 50
-    learning_rate = 0.00001
-    epochs = 60
+    batch_size = 100
+    learning_rate = 0.0001
+    epochs = 20
     gif = False
+    save_model_path = ['trained_models/'] # Saves models if list is non-empty
+
     networks = ['RNN']
     train_test_dic = {}
     test_dic = {}
 
     data, label = data[:realisations, :xy_len, :], label[:realisations]
 
-    # creating test/train data
-    data_train, data_test, label_train, label_test = tts(data, label, test_size=0.1)
-
-    train_data = models.NumbersDataset(data_train, label_train)
-    test_data = models.NumbersDataset(data_test, label_test)
-
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
+    train_loader, test_loader = data_prep(data, label, batch_size=batch_size)
 
     for network in networks:
         # train and running test
@@ -238,11 +264,8 @@ if __name__ == "__main__":
 
         # test
         test_dic[network] = test(train_test_dic[network]['model'], test_loader, batch_size, network=network)
-        # output_test, label_test, acc = test(model_trained, test_loader, batch_size, network=network)
-        # output_test, label_test, acc, acc_list = test_models(model_list, test_loader, batch_size, network=network)
         print(f"Avg error model = {test_dic[network]['acc']:.5f}")
-    
-    #%%
+
     # Calculating ksg:
     test_X = test_dic[network]['tst_data']
 
@@ -254,7 +277,56 @@ if __name__ == "__main__":
     ksg_avg_err = np.mean(np.abs(ksg_err))
 
     print(f"Avg error KSG   = {ksg_avg_err:.5f}")
-    
+
+    if save_model_path:
+        import pandas as pd
+        from datetime import datetime
+
+        now = datetime.now()
+        time = now.strftime("%d-%m-%Y_%H-%M-%S")
+        
+        path_model = save_model_path[0]+time
+
+        isExist = os.path.exists(path_model)
+        if not isExist:
+            os.makedirs(path_model)
+            print("The new directory is created!")
+
+        sample_dict = {
+            'data file' : path,
+            'realisations' : realisations,
+            'xy_len' : xy_len,
+            'batch_size' : batch_size,
+            'learning_rate' : learning_rate,
+            'epochs' : epochs,
+            'network' : networks,
+            'avg error model' : round(test_dic[network]['acc'].item(), 5),
+            'avg error ksg' : round(ksg_avg_err, 5)
+        }
+        df = pd.DataFrame.from_dict([sample_dict]) 
+        df.to_csv (path_model+f'/specs.csv', index = False, header=True)
+
+        # to save:
+        nam = 'model'
+        dictmodels = {nam+f"{i}" : model for i, model in enumerate(train_test_dic['RNN']['model_list'])}
+        torch.save(dictmodels, path_model+f'/model.pt')
+
+        loss_trn = train_test_dic[network]['loss_list']
+        loss_val = train_test_dic[network]['loss_val_list']
+        with open(path_model+'/loss_list.npy', 'wb') as f:
+            np.save(f, loss_trn)
+            np.save(f, loss_val)
+        
+        model_out = test_dic[network]['out_list']
+        ksg = ksg_list
+        label_tst = test_dic[network]['label_list']
+        with open(path_model+'/model_out-ksg-label_tst.npy', 'wb') as f:
+            np.save(f, model_out)
+            np.save(f, ksg)
+            np.save(f, label_tst)
+        
+
+            
     ###################################
     #%% Plots
     ###################################

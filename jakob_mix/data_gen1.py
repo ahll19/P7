@@ -205,8 +205,8 @@ if __name__ == "__main__":
         #realisations = 1000
         xy_len = 50
         maxiter = 1000000
-        max_MI = 2.5
-        inters = 10
+        max_MI = 1
+        inters = 11
         dat_pr_interval = 10
         max_var = 100
         min_var_lower = 0.01
@@ -280,9 +280,17 @@ if __name__ == "__main__":
         if save:
             import pandas as pd
             from datetime import datetime
+            import os
 
             now = datetime.now()
             time = now.strftime("%d-%m-%Y_%H-%M-%S")
+
+            path_dat = 'data/'+time
+
+            isExist = os.path.exists(path_dat)
+            if not isExist:
+                os.makedirs(path_dat)
+                print("The new directory is created!")
 
             sample_dict = {
                 'xy_len' : xy_len,
@@ -296,12 +304,12 @@ if __name__ == "__main__":
                 'max_var_upper': max_var_upper
             }
             df = pd.DataFrame.from_dict([sample_dict]) 
-            df.to_csv (f'data/{time}.csv', index = False, header=True)
+            df.to_csv (path_dat+f'/specs.csv', index = False, header=True)
 
-            path = f"data/{time}_unif_{len(dat_unif)}"
-            save_data(path, dat_unif, lab_unif)
+            path = f"/unif"
+            save_data(path_dat+path, dat_unif, lab_unif)
 
-            with open(f'data/{time}_var_{len(dat_unif)}.npy', 'wb') as f:
+            with open(path_dat+f'/var.npy', 'wb') as f:
                 np.save(f, variance)
             
 
