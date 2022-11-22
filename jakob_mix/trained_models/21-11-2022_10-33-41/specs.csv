@@ -1,0 +1,2 @@
+data file,realisations,xy_len,batch_size,learning_rate,epochs,network,avg error model,avg error ksg
+data/17-11-2022_14-05-48_unif_10000.npy,10000,50,100,0.0001,20,['RNN'],0.14726,0.45339
