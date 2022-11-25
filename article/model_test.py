@@ -9,9 +9,9 @@ import pandas as pd
 
 
 if __name__ == "__main__":
-    path_model = 'trained_models/21-11-2022_10-33-41'
-    tst_data = "data/realisations=5000_xy_len=1000.npy"
-    ksg_unbiased = True
+    path_model = 'trained_models/21-11-2022_12-09-29'
+    tst_data = "data/17-11-2022_14-05-48/unif.npy"
+    ksg_unbiased = False
 
     # Loading models:
     checkpoint = torch.load(path_model+'/model.pt')
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     print(f"Avg error model = {test_dic[network]['acc']:.5f}")
     print(f"Avg error KSG   = {ksg_avg_err:.5f}")
 
-    figsize = (12, 5)
+    figsize = (8, 6)
     fig, axes = plt.subplots(1, 1, sharey=True , figsize=figsize)
     fig.suptitle('Simple plot of results', fontsize=18)
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
 
     fig, axes = plt.subplots(1, 1, figsize=figsize)
-    fig.suptitle('Histogram of error (NN_geuss - label)', fontsize=18)
+    #fig.suptitle('Histogram of error (NN_geuss - label)', fontsize=18)
 
     hist_model = np.array(test_dic[network]['out_list']) - test_dic[network]['label_list']
     concat = np.concatenate([hist_model.reshape(-1), ksg_err])
@@ -95,13 +95,13 @@ if __name__ == "__main__":
     min_ylim, max_ylim = plt.ylim()
     #axes.text(hist_model.mean()+0.02, max_ylim*0.9, 'Model\nMean: {:.2f}'.format(hist_model.mean()))
     #axes.text(ksg_err.mean()+0.02, max_ylim*0.9, 'KSG\nMean: {:.2f}'.format(ksg_err.mean()))
-    axes.set_title(network, fontsize=12)
+    #axes.set_title(network, fontsize=12)
         
     axes.legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=12)
    
     plt.tight_layout()
       
-    #plt.savefig(f'../graphs/hist_{network}_lr_{learning_rate}_ep_{epochs}_bs_{batch_size}.pdf')
+    plt.savefig(f'results/hist.pdf')
     plt.show()
 
 
