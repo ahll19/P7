@@ -101,7 +101,7 @@ if __name__ == "__main__":
    
     plt.tight_layout()
       
-    plt.savefig(f'results/hist.pdf')
+    #plt.savefig(f'results/hist.pdf')
     plt.show()
 
 
@@ -116,7 +116,37 @@ if __name__ == "__main__":
 
     axes.legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=12)
     plt.tight_layout()
-    # plt.savefig(f'../graphs/loss_{network}_lr_{learning_rate}_ep_{epochs}_bs_{batch_size}.pdf')
+    # plt.savefig()
+    plt.show()
+
+    # Plotting lowest and highest MI
+    fig, axes = plt.subplots(1, 1, figsize=figsize)
+    #fig.suptitle('Validation vs Training', fontsize=18)
+    idx_min = np.argmin(label)
+
+    axes.plot(data[idx_min,:,0], data[idx_min,:,1], '*')
+    axes.plot(data[idx_min,0,0], data[idx_min,0,0], label=f'MI = {label[idx_min]:.3f}', ls='None')
+    axes.set_xlabel('$X_i$')
+    axes.set_ylabel('$Y_i$')
+
+
+    axes.legend(bbox_to_anchor=(0.5, -0.08), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=12, handlelength=0)
+    plt.tight_layout()
+    plt.savefig(f'results/data_lowest_mi.pdf')
+    plt.show()
+
+    fig, axes = plt.subplots(1, 1, figsize=figsize)
+    #fig.suptitle('Validation vs Training', fontsize=18)
+    idx_max = np.argmax(label)
+
+    axes.plot(data[idx_max,:,0], data[idx_max,:,1], '*')
+    axes.plot(data[idx_max,0,0], data[idx_max,0,0], label=f'MI = {label[idx_max]:.3f}', ls='None')
+    axes.set_xlabel('$X_i$')
+    axes.set_ylabel('$Y_i$')
+
+    axes.legend(bbox_to_anchor=(0.5, -0.08), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=12, handlelength=0)
+    plt.tight_layout()
+    plt.savefig(f'results/data_highest_mi.pdf')
     plt.show()
 
 # %%
