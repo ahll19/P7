@@ -10,16 +10,14 @@ $$
 
 where $I_d$ is the identity matrix with dimension $d$. It should be noted that in the article $d=1$. The reason for using this generative model is that MI can be calculated as [^fn1],
 
-\begin{equation}
-    I(X_i;Y_i)=\frac{d}{2}\log_2\left( 1 + \frac{\sigma_x}{\sigma_y} \right). \label{eq:mutual_inf}
-\end{equation}
+$$I(X_i;Y_i)=\frac{d}{2}\log_2\left( 1 + \frac{\sigma_x}{\sigma_y} \right).$$ (1)
 
 These MIs are used as labels to train a supervised learning recurrent neural network. 
 
 ## Usage
 The code used for the article is found in the folder 'article'. A discription of each file from 'article' is found below:
 
-`data_gen1.py`: This module uses \eqref{eq:mutual_inf} to 
+`data_gen1.py`: This module uses (1) to 
 
 
 
