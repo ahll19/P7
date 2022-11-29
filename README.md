@@ -3,10 +3,7 @@
 ## Purpose of Repository
 This repository is used for our 7th semester project. We are, unlike other semesters, supposed to write an article. The purpose of this article is to estimate mutual information (MI) between two two random variables. The data is created using the following generative model,
 
-$$
-    X_i\sim\mathcal{N}\left( 0,\ \sigma_xI_d \right), 
-    Y_i\sim\mathcal{N}\left( X_i,\ \sigma_yI_d \right). \tag{1}
-$$
+$$ X_i\sim\mathcal{N}\left( 0,\ \sigma_xI_d \right), Y_i\sim\mathcal{N}\left( X_i,\ \sigma_yI_d \right). \tag{1}$$
 
 where $I_d$ is the identity matrix with dimension $d$. It should be noted that in the article $d=1$. The reason for using this generative model is that MI can be calculated as [^fn1],
 
