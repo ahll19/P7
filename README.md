@@ -10,9 +10,9 @@ $$
 
 where $I_d$ is the identity matrix with dimension $d$. It should be noted that in the article $d=1$. The reason for using this generative model is that MI can be calculated as [^fn1],
 
-\begin{align}
+\begin{equation}
     I(X_i;Y_i)=\frac{d}{2}\log_2\left( 1 + \frac{\sigma_x}{\sigma_y} \right). \label{eq:mutual_inf}
-\end{align}
+\end{equation}
 
 These MIs are used as labels to train a supervised learning recurrent neural network. 
 
