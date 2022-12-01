@@ -1,5 +1,5 @@
 # P7 - Recurrent Neural Network for Estimating Mutual Information of a Gaussian Processes
-
+The article for this project can be found [here](Article_IEEE_P7.pdf).
 ## Purpose of Repository
 This repository is used for our 7th semester project. We are, unlike other semesters, supposed to write an article. The purpose of this article is to estimate mutual information (MI) between two two random variables. The data is created using the following generative model,
 
