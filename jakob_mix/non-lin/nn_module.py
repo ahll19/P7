@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader, Dataset
 import torch
 import torch.nn as nn
 import numpy as np
+import 
 
 def load_data(file_path):
     """
@@ -46,17 +47,21 @@ class Network(nn.Module):
         self.l1 = nn.Linear(input_size, hidden_layer_dims[0]).to(device)
         self.ln = nn.Linear(hidden_layer_dims[-1], 2).to(device)
         self.ls = [self.l1]
-        
+        self.do = [nn.Dropout(0.2)]
         for i in range(len(hidden_layer_dims) - 1):
             self.ls.append(
                 nn.Linear(hidden_layer_dims[i], hidden_layer_dims[i+1]).to(device)
+            )
+            self.do.append(
+                nn.Dropout(0.2)
             )
         self.ls.append(self.ln)
         
     def forward(self, x: np.array) -> np.array:
         out = self.relu(self.ls[0](x))
-        for l in self.ls[1:-1]:
+        for i, l in enumerate(self.ls[1:-1]):
             out = self.relu(l(out))
+            out = self.do[i]
         out = self.ls[-1](out)
         
         return out
