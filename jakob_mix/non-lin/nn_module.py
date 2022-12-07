@@ -2,7 +2,6 @@ from torch.utils.data import DataLoader, Dataset
 import torch
 import torch.nn as nn
 import numpy as np
-import 
 
 def load_data(file_path):
     """
@@ -47,13 +46,9 @@ class Network(nn.Module):
         self.l1 = nn.Linear(input_size, hidden_layer_dims[0]).to(device)
         self.ln = nn.Linear(hidden_layer_dims[-1], 2).to(device)
         self.ls = [self.l1]
-        self.do = [nn.Dropout(0.2)]
         for i in range(len(hidden_layer_dims) - 1):
             self.ls.append(
                 nn.Linear(hidden_layer_dims[i], hidden_layer_dims[i+1]).to(device)
-            )
-            self.do.append(
-                nn.Dropout(0.2)
             )
         self.ls.append(self.ln)
         
@@ -61,7 +56,29 @@ class Network(nn.Module):
         out = self.relu(self.ls[0](x))
         for i, l in enumerate(self.ls[1:-1]):
             out = self.relu(l(out))
-            out = self.do[i]
         out = self.ls[-1](out)
         
         return out
+
+
+def add_noise(data, SNR):
+    # Calculate the noise power
+    P_noise = np.mean(data**2, axis=1)/np.full((data.shape[0], data.shape[2]), SNR)
+
+    # Initialize the noise array
+    noise = np.zeros(data.shape)
+
+    # Generate noise for each sample in the data
+    mu = np.zeros((data.shape[1], 1))
+    for i in range(len(data)):
+        Xi_noise = np.random.normal(mu.copy(), P_noise[i][0], (data.shape[1], 1))
+        Yi_noise = np.random.normal(mu.copy(), P_noise[i][1], (data.shape[1], 1))
+
+        # Concatenate the noise for the X and Y dimensions
+        noise[i] = np.concatenate([Xi_noise, Yi_noise], axis=1)
+
+    # Add the noise to the data
+    noisy_data = data + noise
+
+    # Return the noisy data
+    return noisy_data
