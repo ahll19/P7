@@ -66,87 +66,136 @@ def createPlots(test_results, networks):
     #     print(f"Avg error {network} = {test_results['test_dic'][network]['acc']:.5f}")
     # print(f"Avg error KSG   = {test_results['ksg_avg_err']:.5f}")
 
-    figsize = (10, 5)
-    fig, axes = plt.subplots(1, 3, sharey=True , figsize=figsize)
-    for i, network in enumerate(networks):
-        fig.suptitle('Simple plot of results', fontsize=18)
-        axes[i].plot(test_results['test_dic'][network]['out_list'], '*', label="Model output")
-        axes[i].plot(test_results['test_dic'][network]['label_list'], "*", label="Label")
-        axes[i].plot(test_results['ksg_list'], '*', label="KSG")
-        axes[i].grid()
-        axes[i].set_title(network, fontsize=12)
-    axes[1].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=12)
+    figsize = (8, 6)
+    fig, axes = plt.subplots(1, len(networks), sharey=True , figsize=figsize)
+    if len(networks) == 1:
+        network = networks[0]
+        # fig.suptitle('Simple plot of results', fontsize=18)
+        axes.plot(test_results['test_dic'][network]['out_list'], '*', label="Model output")
+        axes.plot(test_results['test_dic'][network]['label_list'], "*", label="Label")
+        axes.plot(test_results['ksg_list'], '*', label="KSG")
+        axes.grid()
+        # axes.set_title(network, fontsize=15)
+        axes.legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
+        axes.yaxis.set_tick_params(labelsize=15)
+        axes.xaxis.set_tick_params(labelsize=15)
+    else:
+        for i, network in enumerate(networks):
+            # fig.suptitle('Simple plot of results', fontsize=18)
+            axes[i].plot(test_results['test_dic'][network]['out_list'], '*', label="Network output")
+            axes[i].plot(test_results['test_dic'][network]['label_list'], "*", label="Label")
+            axes[i].plot(test_results['ksg_list'], '*', label="KSG")
+            axes[i].grid()
+            # axes[i].set_title(network, fontsize=15)
+            axes.yaxis.set_tick_params(labelsize=15)
+            axes.xaxis.set_tick_params(labelsize=15)
+        axes[1].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
     plt.tight_layout()
     plt.show()
 
-    fig, axes = plt.subplots(1, 3, figsize=figsize)
-    for i, network in enumerate(networks):
-        fig.suptitle('Histogram of error (NN_geuss - label)', fontsize=18)
+    fig, axes = plt.subplots(1, len(networks), figsize=figsize)
+    if len(networks) == 1:
+        network = networks[0]
+        # fig.suptitle('Histogram of error (NN_geuss - label)', fontsize=18)
         hist_model = np.array(test_results['test_dic'][network]['out_list']) - test_results['test_dic'][network]['label_list']
         concat = np.concatenate([hist_model.reshape(-1), test_results['ksg_err']])
         bins = np.linspace(np.min(concat)-0.1, np.max(concat)+0.1, 50)
-        axes[i].hist(test_results['ksg_err'], bins=bins, alpha=0.5, label="KSG")
-        axes[i].hist(hist_model, bins=bins, alpha=0.5, label="Model")
-        axes[i].axvline(test_results['ksg_err'].mean(), label='KSG mean',color='#175987', linestyle='dashed', linewidth=2)
-        axes[i].axvline(hist_model.mean(), label='Model mean', color='#db6d0b', linestyle='dashed', linewidth=2)
-        axes[i].set_title(network, fontsize=12)
-    axes[1].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=12)
+        axes.hist(test_results['ksg_err'], bins=bins, alpha=0.5, label="$r_{KSG}$")
+        axes.hist(hist_model, bins=bins, alpha=0.5, label="$r_{network}$")
+        axes.axvline(test_results['ksg_err'].mean(), label='$r_{KSG}$ mean',color='#175987', linestyle='dashed', linewidth=2)
+        axes.axvline(hist_model.mean(), label='$r_{network}$ mean', color='#db6d0b', linestyle='dashed', linewidth=2)
+        # axes.set_title(network, fontsize=15)
+        axes.legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
+        axes.yaxis.set_tick_params(labelsize=15)
+        axes.xaxis.set_tick_params(labelsize=15)
+    else:
+        for i, network in enumerate(networks):
+            # fig.suptitle('Histogram of error (NN_geuss - label)', fontsize=18)
+            hist_model = np.array(test_results['test_dic'][network]['out_list']) - test_results['test_dic'][network]['label_list']
+            concat = np.concatenate([hist_model.reshape(-1), test_results['ksg_err']])
+            bins = np.linspace(np.min(concat)-0.1, np.max(concat)+0.1, 50)
+            axes[i].hist(test_results['ksg_err'], bins=bins, alpha=0.5, label="$r_{KSG}$")
+            axes[i].hist(hist_model, bins=bins, alpha=0.5, label="$r_{network}$")
+            axes[i].axvline(test_results['ksg_err'].mean(), label='$r_{KSG}$ mean',color='#175987', linestyle='dashed', linewidth=2)
+            axes[i].axvline(hist_model.mean(), label='$r_{network}$ mean', color='#db6d0b', linestyle='dashed', linewidth=2)
+            # axes[i].set_title(network, fontsize=15)
+            axes[i].yaxis.set_tick_params(labelsize=15)
+            axes[i].xaxis.set_tick_params(labelsize=15)
+        axes[0].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
     plt.tight_layout()
     #plt.savefig(f'results/hist.pdf')
     plt.show()
 
-    fig, axes = plt.subplots(1, 3, figsize=figsize)
-    for i, network in enumerate(networks):
-        fig.suptitle('Validation vs Training', fontsize=18)
+    fig, axes = plt.subplots(1, len(networks), figsize=figsize)
+    if len(networks) == 1:
+        network = networks[0]
+        # fig.suptitle('Validation vs Training', fontsize=18)
         ksgx = np.zeros(len(test_results['loss_trn'][network]))+test_results['ksg_avg_err_trn']
-        axes[i].plot(ksgx, label="KSG")
-        axes[i].plot(test_results['loss_trn'][network], label = 'Training')
-        axes[i].plot(test_results['loss_val'][network], label="Validation")
-        axes[i].set_title(network, fontsize=12)
-    axes[1].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=12)
+        axes.plot(ksgx, label="KSG")
+        axes.plot(test_results['loss_trn'][network], label = 'Training')
+        axes.plot(test_results['loss_val'][network], label="Validation")
+        # axes.set_title(network, fontsize=15)
+        axes.legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
+        axes.yaxis.set_tick_params(labelsize=15)
+        axes.xaxis.set_tick_params(labelsize=15)
+    else:
+        for i, network in enumerate(networks):
+            # fig.suptitle('Validation vs Training', fontsize=18)
+            ksgx = np.zeros(len(test_results['loss_trn'][network]))+test_results['ksg_avg_err_trn']
+            axes[i].plot(ksgx, label="KSG")
+            axes[i].plot(test_results['loss_trn'][network], label = 'Training')
+            axes[i].plot(test_results['loss_val'][network], label="Validation")
+            # axes[i].set_title(network, fontsize=12)
+            axes[i].yaxis.set_tick_params(labelsize=15)
+            axes[i].xaxis.set_tick_params(labelsize=15)
+        axes[1].legend(bbox_to_anchor=(0.5, -0.07), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
     plt.tight_layout()
     # plt.savefig()
     plt.show()
 
     # Plotting lowest and highest MI
     fig, axes = plt.subplots(1, 1, figsize=figsize)
-    fig.suptitle('A trainingset with low mutial information', fontsize=18)
+    # fig.suptitle('A trainingset with low mutial information', fontsize=18)
     idx_min = np.argmin(test_results['label'][network])
 
     axes.plot(test_results['data'][networks[0]][idx_min,:,0], test_results['data'][networks[0]][idx_min,:,1], '*')
     axes.plot(test_results['data'][networks[0]][idx_min,0,0], test_results['data'][networks[0]][idx_min,0,0], 
                 label=f'MI = {test_results["label"][networks[0]][idx_min]:.3f}', ls='None')
-    axes.set_xlabel('$X_i$')
-    axes.set_ylabel('$Y_i$')
+    axes.set_xlabel('$X_i$', size=15)
+    axes.set_ylabel('$Y_i$', size=15)
+    axes.yaxis.set_tick_params(labelsize=15)
+    axes.xaxis.set_tick_params(labelsize=15)
 
-
-    axes.legend(bbox_to_anchor=(0.5, -0.1), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=12, handlelength=0)
+    axes.legend(bbox_to_anchor=(0.5, -0.12), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=15, handlelength=0)
     plt.tight_layout()
     # plt.savefig(f'results/data_lowest_mi.pdf')
     plt.show()
 
     fig, axes = plt.subplots(1, 1, figsize=figsize)
-    fig.suptitle('A trainingset with high mutial information', fontsize=18)
+    # fig.suptitle('A trainingset with high mutial information', fontsize=18)
     idx_max = np.argmax(test_results['label'][network])
 
     axes.plot(test_results['data'][networks[0]][idx_max,:,0], test_results['data'][networks[0]][idx_max,:,1], '*')
     axes.plot(test_results['data'][networks[0]][idx_max,0,0], test_results['data'][networks[0]][idx_max,0,0], \
                     label=f'MI = {test_results["label"][networks[0]][idx_max]:.3f}', ls='None')
-    axes.set_xlabel('$X_i$')
-    axes.set_ylabel('$Y_i$')
+    axes.set_xlabel('$X_i$', size=15)
+    axes.set_ylabel('$Y_i$', size=15)
 
-    axes.legend(bbox_to_anchor=(0.5, -0.1), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=12, handlelength=0)
+    axes.yaxis.set_tick_params(labelsize=15)
+    axes.xaxis.set_tick_params(labelsize=15)
+    axes.legend(bbox_to_anchor=(0.5, -0.12), loc="upper center", fancybox=True, shadow=True, ncol=3, fontsize=15, handlelength=0)
     plt.tight_layout()
     # plt.savefig(f'results/data_highest_mi.pdf')
     plt.show()
 
 #%%
 if __name__ == "__main__":
-    path_model_list = ['trained_models_FNN/06-12-2022_15-12-05', 'trained_models_CNN/06-12-2022_14-52-49', 
-                'trained_models/21-11-2022_12-09-29']
+    path_model_list = ['trained_models/21-11-2022_12-09-29'] #['trained_models_FNN/06-12-2022_15-12-05', 'trained_models_CNN/06-12-2022_14-52-49', 
+                
     test_result = getTestResults(path_model_list)
+    print('t')
     #%%
-    networks = ['FNN', 'CNN', 'RNN']
-    createPlots(test_result)
+    networks = ['RNN']
+    createPlots(test_result, networks)
     
 # %%
