@@ -168,9 +168,9 @@ def createPlots(data, networks):
     idx_inside = data['idx_inside']
     idx_outside = data['idx_outside']
 
-    figsize = (10, 5)
+    figsize = (8, 6)
     fig, axes = plt.subplots(1, len(networks), sharex = True, figsize=figsize)
-    fig.suptitle('QQ Plot - Gaussian', fontsize=18)
+    # fig.suptitle('QQ Plot - Gaussian', fontsize=18)
 
     y = [0,1,0,1]
     x = [0,0,1,1]
@@ -194,13 +194,15 @@ def createPlots(data, networks):
         if idx_outside[network][0].size > 0:
             axes.plot(theo[network][idx_outside[network]], data_response[network][idx_outside[network]], 
                             label='Outside ci', ls='None', marker='.', markersize=5)
-        axes.plot(theo[network], slope[network]*theo[network]+intercept[network], label='Reference\nLine', color='r')
-        axes.fill_between(theo[network], lower[network], upper[network], label='Confidence\nRegion', color='#ff00dd', alpha=0.1)
-        axes.set_xlabel('Theoretical Quantiles')
-        axes.set_ylabel('Ordered Quantiles')
+        axes.plot(theo[network], slope[network]*theo[network]+intercept[network], label='Reference Line', color='r')
+        axes.fill_between(theo[network], lower[network], upper[network], label='Confidence Region', color='#ff00dd', alpha=0.1)
+        axes.set_xlabel('Theoretical Quantiles', size=15)
+        axes.set_ylabel('Ordered Quantiles', size=15)
         axes.grid()
-        axes.set_title(network, fontsize=12)
-        axes.legend(bbox_to_anchor=(1.55, 1.027), loc="upper right", fancybox=True, shadow=True, ncol=1, fontsize=12)
+        # axes.set_title(network, fontsize=15)
+        axes.yaxis.set_tick_params(labelsize=15)
+        axes.xaxis.set_tick_params(labelsize=15)
+        axes.legend(bbox_to_anchor=(0.5, -0.15), loc="upper center", fancybox=True, shadow=True, ncol=2, fontsize=15)
     else:
         for i, network in enumerate(networks):
             axes[i].plot(theo[network][idx_inside[network]], data_response[network][idx_inside[network]], 
@@ -213,8 +215,8 @@ def createPlots(data, networks):
             axes[i].set_xlabel('Theoretical Quantiles')
             axes[i].set_ylabel('Ordered Quantiles')
             axes[i].grid()
-            axes[i].set_title(network, fontsize=12)
-        axes[1].legend(bbox_to_anchor=(1.55, 1.027), loc="upper right", fancybox=True, shadow=True, ncol=1, fontsize=12)
+            axes[i].set_title(network, fontsize=15)
+        axes[1].legend(bbox_to_anchor=(1.55, 1.027), loc="upper right", fancybox=True, shadow=True, ncol=1, fontsize=15)
     plt.tight_layout()
     # plt.savefig('results/qq_model_residuals_ksg.pdf')
     plt.show()
@@ -223,7 +225,7 @@ def createPlots(data, networks):
 if __name__ == "__main__":
     path_model_list = [#'trained_models_FNN/06-12-2022_15-12-05', 'trained_models_CNN/06-12-2022_14-52-49', 
                 'trained_models/21-11-2022_12-09-29']
-    networks = ['RNN']
+    networks = ['KSG']
 
     qq_data = getQQData(path_model_list, networks)
     createPlots(qq_data, networks)
