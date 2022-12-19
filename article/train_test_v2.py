@@ -1,4 +1,3 @@
-#%%
 import sys, os
 sys.path.append(os.getcwd())
 import torch
@@ -247,10 +246,9 @@ if __name__ == "__main__":
     learning_rate = 0.0001
     epochs = 20
     gif = False
-    NN = 'RNN'
-    save_model_path = ['trained_models_'+NN+'/'] # Saves models if list is non-empty
+    save_model_path = ['trained_models/'] # Saves models if list is non-empty
 
-    networks = [NN]
+    networks = ['RNN']
     train_test_dic = {}
     test_dic = {}
 
@@ -271,8 +269,8 @@ if __name__ == "__main__":
     test_X = test_dic[network]['tst_data']
 
     ksg_list = np.zeros(len(test_X))
-    # for i in range(len(test_X)):
-    #     ksg_list[i] = ksg.predict(test_X[i,:,0], test_X[i,:,1], 3)
+    for i in range(len(test_X)):
+        ksg_list[i] = ksg.predict(test_X[i,:,0], test_X[i,:,1], 3)
     
     ksg_err = ksg_list - test_dic[network]['label_list'].T[0]
     ksg_avg_err = np.mean(np.abs(ksg_err))
@@ -287,6 +285,7 @@ if __name__ == "__main__":
         time = now.strftime("%d-%m-%Y_%H-%M-%S")
         
         path_model = save_model_path[0]+time
+
         isExist = os.path.exists(path_model)
         if not isExist:
             os.makedirs(path_model)
@@ -308,7 +307,7 @@ if __name__ == "__main__":
 
         # to save:
         nam = 'model'
-        dictmodels = {nam+f"{i}" : model for i, model in enumerate(train_test_dic[NN]['model_list'])}
+        dictmodels = {nam+f"{i}" : model for i, model in enumerate(train_test_dic['RNN']['model_list'])}
         torch.save(dictmodels, path_model+f'/model.pt')
 
         loss_trn = train_test_dic[network]['loss_list']
@@ -324,11 +323,9 @@ if __name__ == "__main__":
             np.save(f, model_out)
             np.save(f, ksg)
             np.save(f, label_tst)
-        
 
-            
     ###################################
-    #%% Plots
+    # Plots
     ###################################
     figsize = (12, 5)
     fig, axs = plt.subplots(1, len(networks), sharey=True , figsize=figsize)

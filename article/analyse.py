@@ -4,10 +4,9 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import pandas as pd
 
-path_model_list = ['trained_models_FNN/06-12-2022_15-12-05', 'trained_models_CNN/06-12-2022_14-52-49', 
-                'trained_models/21-11-2022_12-09-29']
+path_model = 'trained_models/21-11-2022_12-09-29'
 
-with open(path_model_list[0] + '/model_out-ksg-label_tst.npy', 'rb') as f:
+with open(path_model + '/model_out-ksg-label_tst.npy', 'rb') as f:
     lab_model = np.load(f).reshape(1000)
     lab_ksg = np.load(f)
     lab_truth = np.load(f).reshape(1000)

@@ -1,4 +1,3 @@
-# %%
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
@@ -221,11 +220,13 @@ def createPlots(data, networks):
     # plt.savefig('results/qq_model_residuals_ksg.pdf')
     plt.show()
 
-
 if __name__ == "__main__":
-    path_model_list = [#'trained_models_FNN/06-12-2022_15-12-05', 'trained_models_CNN/06-12-2022_14-52-49', 
-                'trained_models/21-11-2022_12-09-29']
-    networks = ['KSG']
 
+    ############### Input ###############
+    model = 'RNN' # KSG if qq-plot for KSG residuals. RNN if qq-plot for network residuals
+
+    ############### Run script ###############
+    networks = [model]
+    path_model_list = ['trained_models/21-11-2022_12-09-29']
     qq_data = getQQData(path_model_list, networks)
     createPlots(qq_data, networks)

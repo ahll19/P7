@@ -199,7 +199,6 @@ if __name__ == "__main__":
     # path = f"data/({realisations},{xy_len},2)_xvar-{min_var_x}-{max_var_x}_yvar-{min_var_y}-{max_var_y}"
     # save_data(path, data, labels)
     # data_loaded, labels_loaded = load_data(path)
-    #%%
     if True:
         np.random.seed(69)
         #realisations = 1000
