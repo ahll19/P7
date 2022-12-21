@@ -1,0 +1,3 @@
+92.70000% overall accuracy
+92.98969% of 0 guessed correctly
+92.42718% of 1 guessed correctly

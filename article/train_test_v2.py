@@ -1,4 +1,3 @@
-#%%
 import sys, os
 sys.path.append(os.getcwd())
 import torch
@@ -324,11 +323,9 @@ if __name__ == "__main__":
             np.save(f, model_out)
             np.save(f, ksg)
             np.save(f, label_tst)
-        
 
-            
     ###################################
-    #%% Plots
+    # Plots
     ###################################
     figsize = (12, 5)
     fig, axs = plt.subplots(1, len(networks), sharey=True , figsize=figsize)
